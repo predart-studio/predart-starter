@@ -1,0 +1,10 @@
+import { cn } from "@/lib/utils"
+import { Spinner as SpinnerIcon } from "@phosphor-icons/react"
+
+function Spinner({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <SpinnerIcon weight="bold" role="status" aria-label="Loading" className={cn("size-4 animate-spin", className)} {...props} />
+  )
+}
+
+export { Spinner }
