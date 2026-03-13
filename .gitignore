@@ -42,3 +42,9 @@ next-env.d.ts
 
 # worktrees
 .worktrees/
+
+# superpowers
+.superpowers/
+
+# design reference signals (keep screenshots, exclude extracted data)
+docs/references/*.json

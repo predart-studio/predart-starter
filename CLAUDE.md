@@ -47,6 +47,15 @@ Phosphor Icons for everything. Import from `@phosphor-icons/react`.
 ## Component Libraries
 See `docs/component-libraries.md` for the full curated reference of per-project library choices, install commands, and client type playbooks.
 
+## Design Brainstorm
+Run `/design-brainstorm` before implementing any new frontend project. This runs an interactive session that produces `docs/design-brief.md` — the visual direction guide for implementation. The brief covers: business context, visual mood, color, typography, layout, animation style, section plan, component stack, and references.
+
+Scripts in `scripts/design/`:
+- `collect-reference.js <url>` — captures viewport screenshots + CSS signals (requires Playwright)
+- `match-playbook.js "<type>"` — matches business type to component stack playbook
+- `scaffold-brief.js` — generates design-brief.md from JSON (stdin)
+- `validate-brief.js` — validates brief completeness and consistency
+
 ## Scripts
 - `pnpm dev` — start dev server (Turbopack)
 - `pnpm build` — production build
