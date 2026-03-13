@@ -16,6 +16,7 @@ Complete the Predart Starter Template — a reusable Next.js project cloned per 
 - Framer Motion
 - GSAP + ScrollTrigger
 - Lenis (smooth scroll)
+- Phosphor Icons (`@phosphor-icons/react`) — 9000+ icons, 6 weights (thin, light, regular, bold, fill, duotone)
 - pnpm
 
 ## 1. Token System
@@ -275,19 +276,132 @@ Already exists (from shadcn):
 - `hooks/` (contains use-mobile.ts)
 - `lib/` (contains utils.ts)
 
-## 6. CLAUDE.md
+## 6. Icon Library
+
+### Dependency swap
+
+Remove `@hugeicons/core-free-icons` and `@hugeicons/react`. Install `@phosphor-icons/react`.
+
+### Usage convention
+
+Phosphor Icons is the single icon library for all use cases:
+- **UI icons** (navigation, actions, status): use `regular` or `bold` weight
+- **Marketing/feature sections**: use `duotone` weight for two-tone illustrated feel
+- **Subtle/decorative**: use `thin` or `light` weight
+
+Import pattern:
+```tsx
+import { ArrowRight, CheckCircle } from '@phosphor-icons/react'
+
+// Weight via prop (default: regular)
+<ArrowRight weight="bold" size={24} />
+<CheckCircle weight="duotone" size={32} />
+```
+
+Tree-shakeable — only imported icons are bundled.
+
+## 7. Component Libraries Reference (`docs/component-libraries.md`)
+
+A curated reference file that travels with every client project clone. Claude Code and the developer can consult it when choosing libraries per project.
+
+### Structure:
+
+**Section 1 — Always available (in template)**
+
+Libraries pre-installed in the starter template:
+
+| Library | Purpose |
+|---------|---------|
+| shadcn/ui v4 | Base component system |
+| Framer Motion | Component enter/exit/layout/hover animations |
+| GSAP + ScrollTrigger | Scroll-driven timelines, pinning, choreography |
+| Lenis | Smooth scroll |
+| Phosphor Icons | All icons (6 weights) |
+| Embla Carousel | Carousels (via shadcn) |
+| React Hook Form + Zod | Form state + validation |
+| next-themes | Dark mode toggling |
+
+**Section 2 — Animated component libraries (copy-paste per project)**
+
+| Library | Install | Best for |
+|---------|---------|----------|
+| Aceternity UI | Copy-paste from ui.aceternity.com | Dramatic heroes, spotlight effects, SaaS showcase, Aurora backgrounds |
+| Magic UI | Copy-paste from magicui.design | Subtle backgrounds, meteors, dot grids, beams, number tickers, stats |
+| Motion Primitives | `npx motion-primitives@latest add [name]` | Text reveals, animated lists, disclosure, transition wrappers |
+| Animate UI | `pnpm dlx shadcn@latest add @animate-ui/[name]` | Micro-interactions, sliding numbers, SaaS dashboards |
+| Smooth UI | `pnpm dlx shadcn@latest add @smoothui/[name]` | Subtle polish, fluid transitions, when Aceternity is too dramatic |
+| Cult UI | Copy-paste from cult-ui.com | Unique design-forward components (Dynamic Island, Shift Card) |
+| React Bits | Copy-paste from reactbits.dev | 110+ text/background animation grab-bag, 4 variants per component |
+
+**Section 3 — Utility libraries (install per project)**
+
+| Library | Install | Best for |
+|---------|---------|----------|
+| yet-another-react-lightbox | `pnpm add yet-another-react-lightbox` | Fullscreen image viewing with zoom, keyboard nav |
+| react-photo-album | `pnpm add react-photo-album` | Masonry/grid/row photo layouts |
+| Swiper | `pnpm add swiper` | 3D effects, heavy touch features beyond Embla |
+| React Leaflet | `pnpm add react-leaflet leaflet` | Free maps (OpenStreetMap, no API key) |
+| react-map-gl + Mapbox | `pnpm add react-map-gl mapbox-gl` | Premium styled maps, 3D, custom tiles |
+| React Player | `pnpm add react-player` | YouTube, Vimeo, self-hosted video |
+| Mux Player | `pnpm add @mux/mux-player-react` | Professional video hosting/streaming |
+
+**Section 4 — Component → Library quick reference**
+
+Maps component types to first-choice and alternative libraries:
+
+| Component Type | First Choice | Alternative |
+|---|---|---|
+| Hero (dramatic) | Aceternity UI | Magic UI |
+| Hero (clean/corporate) | Tailwind Plus blocks | Custom (shadcn + Motion) |
+| Animated backgrounds | Magic UI | Aceternity UI |
+| Text reveal / typing | Motion Primitives | Animate UI |
+| Number counters / stats | Magic UI | Animate UI |
+| Scroll-driven animations | GSAP + ScrollTrigger (custom) | Aceternity UI |
+| Micro-interactions | Animate UI | Smooth UI |
+| Card hover effects | Aceternity UI | Motion Primitives |
+| Image carousels | Embla Carousel (in template) | Swiper |
+| Photo galleries / lightbox | yet-another-react-lightbox | react-photo-album |
+| Maps | React Leaflet (free) | Mapbox GL (premium) |
+| Contact / lead forms | shadcn/ui Form + RHF + Zod | — |
+| Video players | React Player | Mux Player |
+
+**Section 5 — Client type playbooks**
+
+Pre-planned library combos per industry:
+
+- **Real Estate**: Tailwind Plus + Embla + lightbox + React Leaflet + Magic UI (stats) + Motion Primitives (text)
+- **Architecture / Construction**: GSAP scroll-driven + Tailwind Plus + Embla + lightbox + react-photo-album (masonry) + Smooth UI
+- **Auto Dealership**: Tailwind Plus + Swiper (3D vehicle gallery) + lightbox + React Leaflet + Magic UI (stats)
+- **Production / Creative**: Aceternity (dramatic hero) + GSAP scroll portfolio + React Player + react-photo-album + Motion Primitives
+- **SaaS / Tech**: Aceternity + Magic UI + Motion Primitives + Animate UI + Smooth UI
+
+**Section 6 — Tailwind v4 animation note**
+
+Most animated component libraries ship keyframe configs for the old `tailwind.config.ts` format. When copy-pasting, translate `extend.animation` and `extend.keyframes` entries into CSS `@keyframes` blocks and `@theme` entries in globals.css.
+
+**Section 7 — Animation rules**
+
+- Framer Motion for component-scoped animations (enter/exit, layout, hover, drag)
+- GSAP + ScrollTrigger for page-scoped animations (scroll timelines, pinning, sequences)
+- They coexist as long as you don't animate the same property on the same element from both
+- Always add `prefers-reduced-motion` checks
+- Use `dynamic(() => import(...), { ssr: false })` for GSAP-heavy components
+
+## 8. CLAUDE.md
 
 Project documentation for Claude Code sessions. Covers:
 
-- Stack: Next.js 16, App Router, TypeScript, Tailwind v4, shadcn v4, Framer Motion, GSAP + ScrollTrigger, Lenis
+- Stack: Next.js 16, App Router, TypeScript, Tailwind v4, shadcn v4, Framer Motion, GSAP + ScrollTrigger, Lenis, Phosphor Icons, next-themes
 - Token workflow: edit tokens.json → `pnpm tokens` → never edit globals.css directly
 - Client onboarding: `pnpm new-client`
 - shadcn: `pnpm dlx shadcn@latest add [name]` → components/ui/, don't modify
+- Icons: Phosphor Icons (`@phosphor-icons/react`) for all icons — use `regular`/`bold` for UI, `duotone` for marketing, `thin`/`light` for decorative
 - Folder conventions: sections/ (page sections), layout/ (Header/Footer/Nav), animations/ (animation wrappers), ui/ (shadcn only)
 - Animation rules: Framer Motion for component animations, GSAP + ScrollTrigger for scroll-driven, `dynamic()` import for GSAP-heavy, prefers-reduced-motion check
+- Component library reference: see docs/component-libraries.md for per-project library choices
 - Scripts: dev, tokens, new-client, build, lint
 
-## 7. Verification
+## 9. Verification
 
 After all files are created:
 
@@ -307,7 +421,8 @@ After all files are created:
 | `components/animations/lenis-provider.tsx` | Create |
 | `app/layout.tsx` | Modify |
 | `app/globals.css` | Regenerated by sync-tokens |
-| `package.json` | Add "tokens" and "new-client" scripts |
+| `package.json` | Add "tokens" and "new-client" scripts, swap hugeicons → phosphor |
+| `docs/component-libraries.md` | Create |
 | `CLAUDE.md` | Create |
 | `components/sections/.gitkeep` | Create |
 | `components/layout/.gitkeep` | Create |
