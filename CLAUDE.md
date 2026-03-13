@@ -50,6 +50,8 @@ See `docs/component-libraries.md` for the full curated reference of per-project 
 ## Design Brainstorm
 Run `/design-brainstorm` before implementing any new frontend project. This runs an interactive session that produces `docs/design-brief.md` — the visual direction guide for implementation. The brief covers: business context, visual mood, color, typography, layout, animation style, section plan, component stack, and references.
 
+**Quick start:** Drop screenshots, mood boards, or any visual references into `docs/references/` before running the command. The brainstorm will analyze them automatically and use them as a starting point for the conversation.
+
 Scripts in `scripts/design/`:
 - `collect-reference.js <url>` — captures viewport screenshots + CSS signals (requires Playwright)
 - `match-playbook.js "<type>"` — matches business type to component stack playbook

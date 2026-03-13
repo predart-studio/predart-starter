@@ -12,10 +12,30 @@ You are running an interactive design brainstorming session. Your goal is to hel
 2. Check if tokens.json has been customized (not default Inter/blue) → `new-client` already run
 3. Check if `docs/design-brief.md` exists → resume previous brainstorm
 4. If resuming, read the existing brief and tell the user what's already decided
+5. Check if `docs/references/` exists and contains files → pre-loaded inspiration
+
+## Pre-loaded References Detection
+
+Before starting the conversation, scan `docs/references/` for existing files:
+```bash
+ls docs/references/ 2>/dev/null
+```
+
+If the folder contains files (screenshots, images, PDFs, text files, JSON signals from prior `collect-reference.js` runs):
+1. Read and visually analyze every image file (png, jpg, jpeg, webp, gif)
+2. Read any text/markdown/JSON files for context
+3. Build an initial summary of what the references suggest across the 9 brief areas
+4. Open Phase 1 by presenting what you found:
+   > "I found [N] references already in `docs/references/`. Here's what I'm picking up from them:
+   > [summary organized by brief areas]
+   >
+   > Does this match your direction? Share anything else you've got — more screenshots, URLs, descriptions — or tell me if this captures it and we'll move to filling gaps."
+
+If the folder is empty or doesn't exist, proceed with the standard Phase 1 opening.
 
 ## Phase 1 — The Dump
 
-Start with:
+If no pre-loaded references were found, start with:
 > "Let's design this thing. Show me everything you've got — business type, reference sites, screenshots, Figma links, descriptions of the vibe you want, components you like, or anything that captures what you're going for. I'll organize it all. Drop as much or as little as you have."
 
 Accept multiple rounds of input. For each URL the user shares, run:
