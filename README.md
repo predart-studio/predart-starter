@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Predart Starter
 
-## Getting Started
+Reusable Next.js starter template for client projects. Clone it, run the branding wizard, ship.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack)
+- **TypeScript**
+- **Tailwind CSS v4** (CSS-based config, oklch colors)
+- **shadcn/ui v4** (55+ components)
+- **Framer Motion** — component animations
+- **GSAP + ScrollTrigger** — scroll-driven animations
+- **Lenis** — smooth scroll
+- **Phosphor Icons** — 9000+ icons, 6 weights
+- **React Hook Form + Zod** — forms & validation
+- **next-themes** — dark mode
+
+## Quick Start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Clone for a new client
+git clone https://github.com/cristian-preda/predart-starter.git predart-clientname
+cd predart-clientname
+rm -rf .git && git init
+
+# Install
+pnpm install
+
+# Brand it (interactive wizard)
+pnpm new-client
+
+# Dev
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Production build |
+| `pnpm lint` | ESLint |
+| `pnpm tokens` | Sync `tokens.json` → `globals.css` |
+| `pnpm new-client` | Interactive client branding wizard |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Token Workflow
 
-## Learn More
+Colors and radius live in `tokens.json` (oklch format). Edit the file, run `pnpm tokens`, done. Never edit `globals.css` directly — it's generated.
 
-To learn more about Next.js, take a look at the following resources:
+## Client Onboarding
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`pnpm new-client` prompts for:
+- Client slug (e.g. "minerva")
+- Primary brand color (hex)
+- Background color, font, border radius (optional, smart defaults)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+It auto-generates the full palette (light + dark draft), updates `tokens.json`, regenerates CSS, and swaps the font + metadata in `layout.tsx`.
 
-## Deploy on Vercel
+## Folder Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/                  → Pages and layouts
+components/
+  ui/                 → shadcn components (don't modify)
+  sections/           → Full-width page sections (Hero, Features, CTA)
+  layout/             → Header, Footer, Nav
+  animations/         → Animation wrappers (LenisProvider)
+hooks/                → Custom React hooks
+lib/                  → Utilities
+types/                → Shared TypeScript types
+scripts/              → Build/setup scripts
+docs/                 → Component library reference, specs
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Docs
+
+- **`CLAUDE.md`** — AI assistant project context
+- **`docs/component-libraries.md`** — Curated library reference with install commands, quick-reference tables, and client type playbooks
+
+---
+
+Built by [Predart Studio](https://predart.com)
