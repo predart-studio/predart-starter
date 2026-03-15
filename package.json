@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "tokens": "node scripts/sync-tokens.js",
-    "new-client": "node scripts/new-client.js"
+    "new-client": "node scripts/new-client.js",
+    "init-project": "node scripts/init-project.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
