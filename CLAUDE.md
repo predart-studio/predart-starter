@@ -39,7 +39,11 @@ If those files exist, treat them as the primary source of project direction.
 ## Client Onboarding
 Run `pnpm new-client` to brand a cloned project. The wizard prompts for client slug, primary color, background, font, and border radius. It generates the full palette, updates tokens.json, syncs globals.css, and swaps the font + metadata in layout.tsx.
 
-Run `pnpm init-project` to inspect the current project context pack before implementation starts.
+Run `pnpm init-project` to interpret the current project context pack before implementation starts. This will generate:
+- `docs/project-context/project-profile.json`
+- `docs/project-context/bootstrap-notes.md`
+
+Use those outputs as compact constraints alongside the richer markdown direction files.
 
 ## Adding shadcn Components
 ```bash

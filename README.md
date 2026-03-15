@@ -32,8 +32,9 @@ Use an external design-intelligence flow first, then let the repo consume the re
 3. Clone this starter
 4. Add the project context pack
 5. Run `pnpm init-project`
-6. Run `pnpm new-client`
-7. Build with Claude Code or another coding agent
+6. Review the generated `project-profile.json` and `bootstrap-notes.md`
+7. Run `pnpm new-client`
+8. Build with Claude Code or another coding agent
 
 ### Quick / fallback projects
 If you do not have a full external synthesis pack yet, you can still use:
@@ -75,7 +76,7 @@ pnpm dev
 | `pnpm lint` | ESLint |
 | `pnpm tokens` | Sync `tokens.json` → `globals.css` |
 | `pnpm new-client` | Interactive client branding wizard |
-| `pnpm init-project` | Inspect the project context pack and summarize what exists |
+| `pnpm init-project` | Interpret the project context pack, write `project-profile.json`, and generate `bootstrap-notes.md` |
 
 ## Project Context Pack
 
