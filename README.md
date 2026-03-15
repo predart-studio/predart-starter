@@ -26,6 +26,9 @@ rm -rf .git && git init
 # Install
 pnpm install
 
+# Design brainstorm (optional — drop references into docs/references/ first)
+/design-brainstorm
+
 # Brand it (interactive wizard)
 pnpm new-client
 
@@ -42,6 +45,18 @@ pnpm dev
 | `pnpm lint` | ESLint |
 | `pnpm tokens` | Sync `tokens.json` → `globals.css` |
 | `pnpm new-client` | Interactive client branding wizard |
+
+## Design Brainstorm
+
+Run `/design-brainstorm` in Claude Code before implementation to converge on a visual direction. It produces `docs/design-brief.md` covering business context, visual mood, color, typography, layout, animation style, section plan, and component stack.
+
+**Pre-load references:** Drop screenshots or mood boards into `docs/references/` before running — the brainstorm will analyze them automatically.
+
+Scripts in `scripts/design/`:
+- `collect-reference.js <url>` — captures viewport screenshots + CSS signals (requires Playwright)
+- `match-playbook.js "<type>"` — matches business type to component stack playbook
+- `scaffold-brief.js` — generates design-brief.md from JSON (stdin)
+- `validate-brief.js` — validates brief completeness and consistency
 
 ## Token Workflow
 
