@@ -55,39 +55,62 @@ export function TextReveal({
     const el = ref.current
     if (!el) return
 
-    const tokens = splitTokens(text, by).map((t) => t.trim()).filter(Boolean)
+    let cancelled = false
+    let ctx: gsap.Context | undefined
 
-    // Build masked tokens: outer clip (inline-block, overflow hidden) > inner.
-    el.textContent = ''
-    const inners: HTMLElement[] = []
-    tokens.forEach((tok, i) => {
-      const mask = document.createElement('span')
-      mask.style.display = 'inline-block'
-      mask.style.overflow = 'hidden'
-      mask.style.verticalAlign = 'top'
-      const inner = document.createElement('span')
-      inner.style.display = 'inline-block'
-      inner.textContent = tok
-      mask.appendChild(inner)
-      el.appendChild(mask)
-      // space between words (char mode keeps glyphs adjacent)
-      if (by === 'word' && i < tokens.length - 1) el.appendChild(document.createTextNode(' '))
-      inners.push(inner)
-    })
+    const build = () => {
+      if (cancelled) return
 
-    const ctx = gsap.context(() => {
-      gsap.set(inners, { yPercent: 100 })
-      gsap.to(inners, {
-        yPercent: 0,
-        duration,
-        ease: 'power3.out',
-        stagger,
-        scrollTrigger: { trigger: el, start: 'top 75%', once: true },
+      const tokens = splitTokens(text, by).map((t) => t.trim()).filter(Boolean)
+
+      // Build masked tokens: outer clip (inline-block, overflow hidden) > inner.
+      el.textContent = ''
+      const inners: HTMLElement[] = []
+      tokens.forEach((tok, i) => {
+        const mask = document.createElement('span')
+        mask.style.display = 'inline-block'
+        mask.style.overflow = 'hidden'
+        mask.style.verticalAlign = 'top'
+        const inner = document.createElement('span')
+        inner.style.display = 'inline-block'
+        inner.textContent = tok
+        mask.appendChild(inner)
+        el.appendChild(mask)
+        // space between words (char mode keeps glyphs adjacent)
+        if (by === 'word' && i < tokens.length - 1) el.appendChild(document.createTextNode(' '))
+        inners.push(inner)
       })
-    }, el)
+
+      ctx = gsap.context(() => {
+        // yPercent 110 (not 100) fully clears descenders behind the mask;
+        // expo.out is the editorial ease the reference uses.
+        gsap.set(inners, { yPercent: 110 })
+        gsap.to(inners, {
+          yPercent: 0,
+          duration,
+          ease: 'expo.out',
+          stagger,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 75%',
+            once: true,
+            invalidateOnRefresh: true,
+          },
+        })
+      }, el)
+    }
+
+    // Wait for web fonts before measuring/masking — splitting against a fallback
+    // font and then swapping mid-reveal lets glyphs peek above the mask.
+    if (typeof document !== 'undefined' && document.fonts?.status !== 'loaded') {
+      document.fonts.ready.then(build)
+    } else {
+      build()
+    }
 
     return () => {
-      ctx.revert()
+      cancelled = true
+      ctx?.revert()
       el.textContent = text
     }
   }, [text, by, stagger, duration, prefersReduced])
