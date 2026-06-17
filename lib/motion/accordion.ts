@@ -3,22 +3,34 @@
  * and the index a user just clicked, returns the next set — supporting both
  * single-open (clicking opens one, closes any other) and multi-open (each panel
  * toggles independently). Framework-free + DOM-free so it is unit-testable; the
- * <MotionAccordion> wrapper drives the height/chevron tweens off the result.
+ * <MotionAccordion> wrapper drives the height/icon tweens off the result.
  *
- * Clean-room reference: annnimate "Accordion" — behavior only.
+ * Reference: matched 1:1 against the official annnimate "Accordion" source.
  */
 
-/** Open/close height tween duration in seconds (matches the studied ~0.4s feel). */
-export const DEFAULT_ACCORDION_DURATION = 0.4
+// Defaults mirror the official annnimate "Accordion" source exactly.
 
-/** GSAP ease for the expand (height 0 -> auto). */
-export const DEFAULT_ACCORDION_EASE_OPEN = 'power2.out'
+/** Open/close height + icon tween duration in seconds (source default 0.8). */
+export const DEFAULT_ACCORDION_DURATION = 0.8
 
-/** GSAP ease for the collapse (height auto -> 0). */
-export const DEFAULT_ACCORDION_EASE_CLOSE = 'power2.in'
+/** Single GSAP ease for the height + icon timeline, played/reversed (source). */
+export const DEFAULT_ACCORDION_EASE = 'expo.inOut'
 
-/** Chevron rotation, in degrees, when a panel is open (studied: 0 -> 180). */
-export const DEFAULT_ACCORDION_CHEVRON_DEG = 180
+/** Icon rotation, in degrees, when a panel opens (source iconRotation -180). */
+export const DEFAULT_ACCORDION_ICON_ROTATION = -180
+
+/**
+ * Body-text line-stagger reveal on open — SplitText lines slide up from behind a
+ * line mask. Values mirror the source's stagger* defaults.
+ */
+export const DEFAULT_ACCORDION_STAGGER = {
+  duration: 0.6,
+  delay: 0.15,
+  ease: 'expo.out',
+  yPercent: 110,
+  /** ms after the panel starts opening before the text staggers in. */
+  startDelay: 200,
+} as const
 
 export interface NextOpenInput {
   /** Indices currently open. */

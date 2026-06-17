@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest'
 import {
   nextOpenState,
   DEFAULT_ACCORDION_DURATION,
-  DEFAULT_ACCORDION_CHEVRON_DEG,
+  DEFAULT_ACCORDION_ICON_ROTATION,
+  DEFAULT_ACCORDION_STAGGER,
 } from '@/lib/motion/accordion'
 
 describe('nextOpenState', () => {
@@ -32,8 +33,10 @@ describe('nextOpenState', () => {
     expect(nextOpenState({ open: [0, 1], index: 1, multiple: true })).toEqual([0])
   })
 
-  it('exposes sane motion defaults', () => {
-    expect(DEFAULT_ACCORDION_DURATION).toBeGreaterThan(0)
-    expect(DEFAULT_ACCORDION_CHEVRON_DEG).toBe(180)
+  it('exposes the source-matched motion defaults', () => {
+    expect(DEFAULT_ACCORDION_DURATION).toBe(0.8)
+    expect(DEFAULT_ACCORDION_ICON_ROTATION).toBe(-180)
+    expect(DEFAULT_ACCORDION_STAGGER.yPercent).toBe(110)
+    expect(DEFAULT_ACCORDION_STAGGER.ease).toBe('expo.out')
   })
 })
