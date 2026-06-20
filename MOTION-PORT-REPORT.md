@@ -206,3 +206,68 @@ React child → runtime crash). "Observe, don't guess" repeatedly corrected wron
 (CinematicText had no blur; Card3DFlip was tilt-only not a back-flip; TextMorph is
 input-driven not auto-cycle). Transient API 500s once killed a batch mid-flight — no
 partial files leaked; a targeted retry recovered it.
+
+---
+
+# Addendum — second source: pixel-point/animate-text
+
+Source: https://github.com/pixel-point/animate-text (24 text-effect specs as JSON
+contracts; installed globally as an agent skill). Distinct catalog from annnimate
+above. Method: read the effect's portable spec + `library_adapters.gsap`, clean-room
+implement the one-shot ENTER as standard GSAP (the catalog's looping showcase is
+demo-only). Specs are reference data — we ship our own code, not their files (the
+repo has no LICENSE).
+
+| Component | spec id | status |
+|-----------|---------|--------|
+| SoftBlur | soft-blur-in | built — per-char fade + upward drift (y 16→0) + blur (12→0px), CustomEase of cubic-bezier(0.22,1,0.36,1), dur 0.9s / stagger 0.025s; trigger load/scroll/hover. Distinct from CharacterAppear (pure opacity). +5 unit tests. |
+
+### Full catalog port (remaining 23 specs)
+
+Fanned out one dedicated agent per spec (parallel, disjoint files — no shared-file
+edits; the registry barrel + `/lab` were wired centrally afterward). Two demo modes:
+**entrance** effects ship the one-shot ENTER reveal with the SoftBlur prop contract
+(`text` / `trigger` `load|scroll|hover` default scroll / `duration` / `stagger` /
+`className` / `as`); **swap** effects are fundamentally string→string transitions, so
+they ship an auto-cycling wrapper (`phrases: string[]` / `interval`). Every pure
+`lib/motion/*` module is DOM-free + unit-tested; every component is window-guarded
+CustomEase + ScrollTrigger, `usePrefersReducedMotion`, `gsap.context` → `ctx.revert()`.
+
+**Entrance reveals (one-shot, scroll-triggered):**
+
+| Component | spec id | target |
+|-----------|---------|--------|
+| PerCharacterRise | per-character-rise | per-character (y 32→0, no blur — the crisp counterpart to SoftBlur) |
+| PerWordCrossfade | per-word-crossfade | per-word (opacity + small y drift) |
+| SpringScaleIn | spring-scale-in | per-word (overshoot CustomEase y2=1.56) |
+| MaskRevealUp | mask-reveal-up | per-line (masked upward reveal) |
+| LineByLineSlide | line-by-line-slide | per-line (staggered slide from left) |
+| TypewriterSteps | typewriter (→ slug `typewriter-steps`) | per-character, `steps()` ease — renamed to avoid the existing Typewriter |
+| MicroScaleFade | micro-scale-fade | whole (tiny scale pop) |
+| ShimmerSweep | shimmer-sweep | whole (left→center highlight sweep) |
+| BottomUpLetters | bottom-up-letters | per-character staircase from below |
+| TopDownLetters | top-down-letters | per-character staircase from above |
+| DepthParallaxWords | depth-parallax-words | per-word (scale + y depth) |
+| StaggerFromCenter | stagger-from-center | per-character, gsap stagger `from:'center'` |
+| StaggerFromEdges | stagger-from-edges | per-character, gsap stagger `from:'edges'` |
+| ShortSlideRight | short-slide-right | per-word (phrase glides in as one x-move; words revealed by opacity) |
+| KineticCenterBuild | kinetic-center-build | per-word build (words push the centered line left) |
+| ShortSlideDown | short-slide-down | per-word build (words drop into a stacked multi-line composition) |
+
+**Swap transitions (auto-cycling between phrases):**
+
+| Component | spec id | target |
+|-----------|---------|--------|
+| FadeThrough | fade-through | whole (Material fade-through) |
+| SharedAxisX | shared-axis-x | whole (horizontal shared-axis) |
+| SharedAxisY | shared-axis-y | per-word (staircase hard-cut) |
+| SharedAxisZ | shared-axis-z | whole (scale-based depth) |
+| BlurOutUp | blur-out-up | per-word (clean in, airy blur-up exit) |
+| ScaleDownFade | scale-down-fade | whole (settle-in + scale-down fade exit) |
+| FocusBlurResolve | focus-blur-resolve | whole (heavy blur → crisp → soft blur-out) |
+
+Verification: `tsc --noEmit` clean across all 23 ports + barrel + registry (only the 2
+pre-existing unrelated shadcn errors remain); ESLint clean on all new files (only the
+pre-existing `VelocityClip` unused-import warning remains). Per-spec vitest suites were
+written and self-reported green by each agent. Visual QA is human-run (no Playwright).
+`/lab` now carries the SoftBlur pilot + all 23 = 24 animate-text cards.

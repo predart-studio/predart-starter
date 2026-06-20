@@ -52,6 +52,30 @@ import {
   GooeyHoverReveal,
   MeshGradient,
   ImageDissolveScroll,
+  SoftBlur,
+  PerCharacterRise,
+  PerWordCrossfade,
+  SpringScaleIn,
+  MaskRevealUp,
+  LineByLineSlide,
+  TypewriterSteps,
+  MicroScaleFade,
+  ShimmerSweep,
+  BottomUpLetters,
+  TopDownLetters,
+  DepthParallaxWords,
+  StaggerFromCenter,
+  StaggerFromEdges,
+  ShortSlideRight,
+  KineticCenterBuild,
+  ShortSlideDown,
+  FadeThrough,
+  SharedAxisX,
+  SharedAxisY,
+  SharedAxisZ,
+  BlurOutUp,
+  ScaleDownFade,
+  FocusBlurResolve,
 } from '@/components/animations'
 
 /**
@@ -64,6 +88,16 @@ import {
  * for ScrollTrigger, isolated position:fixed). Keep this the only place demos
  * live — both the grid and the frame read from here.
  */
+/** Which catalog a motion component was ported from — drives the /lab source filter + tile badge. */
+export type AnimSource = 'pixelpoint' | 'annnimate' | 'predart'
+
+/** Human-facing label + one-line provenance for each source. */
+export const SOURCE_META: Record<AnimSource, { label: string; blurb: string }> = {
+  pixelpoint: { label: 'Pixelpoint', blurb: 'pixel-point/animate-text — text-animation catalog' },
+  annnimate: { label: 'Annnimate', blurb: 'annnimate.com — clean-room GSAP ports' },
+  predart: { label: 'Predart', blurb: 'predart-starter — native shared infra' },
+}
+
 export interface LabEntry {
   /** URL slug — `/lab/<slug>`. */
   slug: string
@@ -79,6 +113,8 @@ export interface LabEntry {
   scroll?: boolean
   /** The actual demo. Rendered server-side inside the isolated frame. */
   render: () => ReactNode
+  /** Provenance — which catalog this motion was ported from (assigned below). */
+  source: AnimSource
 }
 
 /** Monochrome SVG data-URI placeholder (no network dependency, on-brand). */
@@ -94,7 +130,7 @@ const followItems = [
   { label: 'Project Four', image: ph('FOUR') },
 ]
 
-export const entries: LabEntry[] = [
+const rawEntries: Omit<LabEntry, 'source'>[] = [
   {
     slug: 'text-scramble',
     name: 'Text Scramble',
@@ -193,6 +229,317 @@ export const entries: LabEntry[] = [
       />
     ),
   },
+  {
+    slug: 'soft-blur',
+    name: 'Soft Blur',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <SoftBlur
+        text="Think different."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+
+  // ── animate-text catalog ports (pixel-point/animate-text) ───────────────────
+  // Entrance reveals — one-shot, scroll-triggered (mirror the SoftBlur contract).
+  {
+    slug: 'per-character-rise',
+    name: 'Per-Character Rise',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <PerCharacterRise
+        text="One more thing."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'per-word-crossfade',
+    name: 'Per-Word Crossfade',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <PerWordCrossfade
+        text="Beautifully, unmistakably simple."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'spring-scale-in',
+    name: 'Spring Scale In',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <SpringScaleIn
+        text="Fast. Crisp. Fluid."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'mask-reveal-up',
+    name: 'Mask Reveal Up',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <MaskRevealUp
+        text={'Designed to move.\nBuilt to focus.'}
+        className="text-center font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'line-by-line-slide',
+    name: 'Line-by-Line Slide',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <LineByLineSlide
+        text={'Think different.\nDo more.'}
+        className="text-center font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'typewriter-steps',
+    name: 'Typewriter (Steps)',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <TypewriterSteps
+        text="Precision in motion."
+        className="font-mono text-3xl tracking-tight md:text-4xl"
+      />
+    ),
+  },
+  {
+    slug: 'micro-scale-fade',
+    name: 'Micro Scale Fade',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <MicroScaleFade
+        text="Welcome to motion."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'shimmer-sweep',
+    name: 'Shimmer Sweep',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <ShimmerSweep
+        text="Shiny details."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'bottom-up-letters',
+    name: 'Bottom-Up Letters',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <BottomUpLetters
+        text="Shift"
+        className="font-sans text-7xl font-bold uppercase tracking-tight md:text-8xl"
+      />
+    ),
+  },
+  {
+    slug: 'top-down-letters',
+    name: 'Top-Down Letters',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <TopDownLetters
+        text="Signal"
+        className="font-sans text-7xl font-bold uppercase tracking-tight md:text-8xl"
+      />
+    ),
+  },
+  {
+    slug: 'depth-parallax-words',
+    name: 'Depth Parallax Words',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <DepthParallaxWords
+        text="Depth in every word."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'stagger-from-center',
+    name: 'Stagger From Center',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <StaggerFromCenter
+        text="Centered reveal."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'stagger-from-edges',
+    name: 'Stagger From Edges',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <StaggerFromEdges
+        text="Edges converge."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'short-slide-right',
+    name: 'Short Slide Right',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <ShortSlideRight
+        text="Move with intent."
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'kinetic-center-build',
+    name: 'Kinetic Center Build',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <KineticCenterBuild
+        text="Words push left."
+        className="text-center font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'short-slide-down',
+    name: 'Short Slide Down',
+    category: 'text',
+    hint: 'scroll into view',
+    scroll: true,
+    render: () => (
+      <ShortSlideDown
+        text="Drop into place."
+        className="text-center font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+
+  // Swap transitions — auto-cycling between phrases (fundamentally string-to-string).
+  {
+    slug: 'fade-through',
+    name: 'Fade Through',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <FadeThrough
+        phrases={['Calm transitions.', 'Fade through content.', 'Focus shifts smoothly.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'shared-axis-x',
+    name: 'Shared Axis X',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <SharedAxisX
+        phrases={['Slide across X.', 'Sibling views.', 'Keep continuity.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'shared-axis-y',
+    name: 'Shared Axis Y',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <SharedAxisY
+        phrases={['Layered navigation.', 'Hierarchy made clear.', 'Depth with restraint.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'shared-axis-z',
+    name: 'Shared Axis Z',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <SharedAxisZ
+        phrases={['Zooming between states.', 'Elevate and settle.', 'Scale with purpose.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'blur-out-up',
+    name: 'Blur Out Up',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <BlurOutUp
+        phrases={['Clear in, airy out.', 'Lightweight typography.', 'Exit with grace.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'scale-down-fade',
+    name: 'Scale Down Fade',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <ScaleDownFade
+        phrases={['Quietly refined.', 'Polished transitions.', 'A soft close.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+  {
+    slug: 'focus-blur-resolve',
+    name: 'Focus Blur Resolve',
+    category: 'text',
+    hint: 'auto-cycles',
+    render: () => (
+      <FocusBlurResolve
+        phrases={['Focus resolves clearly.', 'Detail emerges.', 'Then softly recedes.']}
+        className="font-sans text-4xl font-semibold tracking-tight md:text-6xl"
+      />
+    ),
+  },
+
   {
     slug: 'dual-scramble',
     name: 'Dual Scramble',
@@ -794,6 +1141,32 @@ export const entries: LabEntry[] = [
     ),
   },
 ]
+
+// ── Provenance tagging ───────────────────────────────────────────────────────
+// Stamp each entry with the catalog it was ported from so /lab can filter + badge
+// by source. pixel-point/animate-text and predart-native are explicit sets;
+// everything else is an annnimate.com port (the original, largest batch).
+const PIXELPOINT_SLUGS = new Set<string>([
+  'soft-blur',
+  'per-character-rise', 'per-word-crossfade', 'spring-scale-in', 'mask-reveal-up',
+  'line-by-line-slide', 'typewriter-steps', 'micro-scale-fade', 'shimmer-sweep',
+  'bottom-up-letters', 'top-down-letters', 'depth-parallax-words', 'stagger-from-center',
+  'stagger-from-edges', 'short-slide-right', 'kinetic-center-build', 'short-slide-down',
+  'fade-through', 'shared-axis-x', 'shared-axis-y', 'shared-axis-z', 'blur-out-up',
+  'scale-down-fade', 'focus-blur-resolve',
+])
+
+const PREDART_SLUGS = new Set<string>([
+  'text-scramble', 'magnetic', 'draw-path', 'velocity-skew', 'image-follow-list',
+])
+
+function sourceOf(slug: string): AnimSource {
+  if (PIXELPOINT_SLUGS.has(slug)) return 'pixelpoint'
+  if (PREDART_SLUGS.has(slug)) return 'predart'
+  return 'annnimate'
+}
+
+export const entries: LabEntry[] = rawEntries.map((e) => ({ ...e, source: sourceOf(e.slug) }))
 
 const bySlug = new Map(entries.map((e) => [e.slug, e]))
 
