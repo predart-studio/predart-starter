@@ -8,6 +8,7 @@ Reusable Next.js starter template for client projects. Clone it, initialize the 
 - **TypeScript**
 - **Tailwind CSS v4** (CSS-based config, oklch colors)
 - **shadcn/ui v4** (55+ components)
+- **Sanity CMS** — embedded Studio at `/studio`, typed GROQ, live preview
 - **Framer Motion** — component animations
 - **GSAP + ScrollTrigger** — scroll-driven animations
 - **Lenis** — smooth scroll
@@ -77,6 +78,8 @@ pnpm dev
 | `pnpm tokens` | Sync `tokens.json` → `globals.css` |
 | `pnpm new-client` | Interactive client branding wizard |
 | `pnpm init-project` | Interpret the project context pack, write `project-profile.json`, and generate `bootstrap-notes.md` |
+| `pnpm setup-sanity` | Connect a Sanity project (writes `.env.local`) |
+| `pnpm typegen` | Regenerate `sanity.types.ts` from schema + GROQ queries |
 
 ## Project Context Pack
 
@@ -118,6 +121,22 @@ Scripts in `scripts/design/`:
 - `match-playbook.js "<type>"` — matches business type to component stack playbook
 - `scaffold-brief.js` — generates design-brief.md from JSON (stdin)
 - `validate-brief.js` — validates brief completeness and consistency
+
+## Sanity CMS
+
+The starter ships with Sanity built in — an embedded Studio at `/studio`, a
+default content model (site settings, page builder, blog), typed GROQ fetching,
+and live preview. It's **project-agnostic**: each client connects its own
+project, and until one is connected the site builds and runs unchanged.
+
+```bash
+pnpm setup-sanity   # connect a project (writes .env.local)
+pnpm typegen        # generate types from your schema + queries
+pnpm dev            # → http://localhost:3000/studio
+```
+
+Full guide — content model, fetching, draft mode, extending, and trade-offs — in
+[`docs/sanity.md`](docs/sanity.md).
 
 ## Token Workflow
 

@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 
 export default defineConfig({
-  plugins: [react()],
+  // `sanity` pulls vite 8 into the dependency tree while vitest types against
+  // vite 7; the React plugin is runtime-compatible across both, so bridge the
+  // duplicated Plugin types here.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugins: [react()] as any,
   test: {
     environment: 'jsdom',
     globals: true,

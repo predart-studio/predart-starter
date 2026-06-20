@@ -2,6 +2,7 @@
 
 ## Stack
 - Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui v4
+- Sanity CMS (embedded Studio at `/studio`, next-sanity Live Content API)
 - Framer Motion, GSAP + ScrollTrigger, Lenis (smooth scroll)
 - Phosphor Icons (`@phosphor-icons/react`)
 - next-themes (dark mode)
@@ -74,6 +75,31 @@ Phosphor Icons for everything. Import from `@phosphor-icons/react`.
 - Use `dynamic(() => import(...), { ssr: false })` for GSAP-heavy components
 - Always add `prefers-reduced-motion` media query checks
 
+## Sanity CMS
+Built in by default — embedded Studio at `/studio`, project-agnostic (each client
+connects its own project). Full guide: `docs/sanity.md`.
+
+- **Activation**: env-guarded. Everything is gated on `isSanityConfigured` from
+  `sanity/env.ts`; with no `NEXT_PUBLIC_SANITY_PROJECT_ID` the site builds/runs
+  unchanged and stays fully static. Connect a project with `pnpm setup-sanity`.
+- **Never throw on missing env** — keep new CMS code behind `isSanityConfigured`
+  so a fresh clone always builds.
+- **Schema** lives in `sanity/schemaTypes/{documents,objects,blocks}`. Use
+  `defineType`/`defineField`/`defineArrayMember`, an icon, and a `preview` on
+  every type. Register new types in `schemaTypes/index.ts`.
+- **Page builder**: top-level pages are CMS-driven via the `page` type +
+  `app/[slug]/page.tsx`. Add a block → schema in `blocks/`, register in
+  `pageBuilder.ts` + `index.ts`, add a `case` in
+  `components/sanity/page-builder.tsx`.
+- **Fetching**: use `sanityFetch` from `sanity/lib/live` (Live Content API).
+  Queries go in `sanity/lib/queries.ts` wrapped in `defineQuery`.
+- **TypeGen**: run `pnpm typegen` after any query or schema change
+  (`sanity.types.ts` is generated; never hand-edit). Embedded Studio has no
+  watch mode.
+- **Don't** import `sanity/lib/token.ts` into client components, and **don't**
+  import `sanity.config.ts` into a Server Component (mount the Studio behind the
+  `'use client'` boundary in `app/studio/[[...tool]]/Studio.tsx`).
+
 ## Component Libraries
 See `docs/component-libraries.md` for the full curated reference of per-project library choices, install commands, and client type playbooks.
 
@@ -98,3 +124,5 @@ Scripts in `scripts/design/`:
 - `pnpm tokens` — sync tokens.json to globals.css
 - `pnpm new-client` — interactive client branding wizard
 - `pnpm init-project` — inspect the current project context pack
+- `pnpm setup-sanity` — connect a Sanity project (writes `.env.local`)
+- `pnpm typegen` — regenerate `sanity.types.ts` from schema + queries
