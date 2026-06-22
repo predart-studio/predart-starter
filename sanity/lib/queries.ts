@@ -7,6 +7,10 @@ import { defineQuery } from 'next-sanity'
  */
 
 // Singleton: global site settings (nav, branding, contact, social).
+// Intentionally unconsumed by the starter itself — `components/layout/` ships
+// empty so Header/Footer can be built per client. Fetch this with `sanityFetch`
+// from your layout (or Header/Footer) to drive CMS-managed nav, branding, and
+// contact details.
 export const SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]{
   title,
   description,
