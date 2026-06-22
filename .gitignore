@@ -49,3 +49,6 @@ next-env.d.ts
 
 # design reference signals (keep screenshots, exclude extracted data)
 docs/references/*.json
+
+# logs
+*.log
