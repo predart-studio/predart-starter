@@ -1,3 +1,4 @@
+import type { PAGE_QUERY_RESULT } from '@/sanity.types'
 import { Button } from '@/components/ui/button'
 
 import { SanityImage } from './sanity-image'
@@ -10,66 +11,16 @@ import { PortableTextRenderer } from './portable-text'
  * a `case` here. Keep these intentionally plain — clients restyle per brand.
  */
 
-interface CtaLink {
-  _key?: string
-  label?: string
-  href?: string
-  openInNewTab?: boolean
-}
+/**
+ * Block types derived from the generated PAGE_QUERY result, so the renderer
+ * always matches the actual GROQ projection (e.g. links already coalesced to a
+ * flat `href`). Regenerate with `pnpm typegen` after any query/schema change.
+ */
+type PageBlock = NonNullable<NonNullable<PAGE_QUERY_RESULT>['pageBuilder']>[number]
+type Block<T extends PageBlock['_type']> = Extract<PageBlock, { _type: T }>
+type CtaData = NonNullable<Block<'callToAction'>['button']>
 
-interface HeroBlock {
-  _key: string
-  eyebrow?: string
-  heading?: string
-  subheading?: string
-  image?: { asset?: unknown; alt?: string }
-  ctas?: CtaLink[]
-}
-
-interface FeatureItem {
-  _key?: string
-  title?: string
-  body?: string
-  icon?: string
-}
-
-interface FeatureGridBlock {
-  _key: string
-  eyebrow?: string
-  heading?: string
-  intro?: string
-  features?: FeatureItem[]
-}
-
-interface TestimonialItem {
-  _key?: string
-  quote?: string
-  author?: string
-  role?: string
-  avatar?: { asset?: unknown }
-}
-
-interface TestimonialsBlock {
-  _key: string
-  heading?: string
-  items?: TestimonialItem[]
-}
-
-interface CallToActionBlock {
-  _key: string
-  heading?: string
-  body?: string
-  button?: CtaLink
-}
-
-interface RichTextBlockData {
-  _key: string
-  content?: unknown
-}
-
-type UnknownBlock = { _type?: string; _key?: string } & Record<string, unknown>
-
-function CtaButton({ cta, variant = 'default' }: { cta?: CtaLink; variant?: 'default' | 'outline' }) {
+function CtaButton({ cta, variant = 'default' }: { cta?: CtaData | null; variant?: 'default' | 'outline' }) {
   if (!cta?.label) return null
   const href = cta.href ?? '#'
   const newTab = Boolean(cta.openInNewTab)
@@ -86,7 +37,7 @@ function CtaButton({ cta, variant = 'default' }: { cta?: CtaLink; variant?: 'def
   )
 }
 
-function HeroSection(block: HeroBlock) {
+function HeroSection(block: Block<'hero'>) {
   return (
     <section className="mx-auto max-w-6xl px-6 py-24 md:px-10 md:py-32">
       <div className="grid items-center gap-12 md:grid-cols-2">
@@ -122,7 +73,7 @@ function HeroSection(block: HeroBlock) {
   )
 }
 
-function FeatureGridSection(block: FeatureGridBlock) {
+function FeatureGridSection(block: Block<'featureGrid'>) {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
       <div className="mb-12 flex max-w-prose flex-col gap-4">
@@ -153,7 +104,7 @@ function FeatureGridSection(block: FeatureGridBlock) {
   )
 }
 
-function TestimonialsSection(block: TestimonialsBlock) {
+function TestimonialsSection(block: Block<'testimonials'>) {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
       {block.heading ? (
@@ -189,7 +140,7 @@ function TestimonialsSection(block: TestimonialsBlock) {
   )
 }
 
-function CallToActionSection(block: CallToActionBlock) {
+function CallToActionSection(block: Block<'callToAction'>) {
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:px-10">
       <div className="flex flex-col items-center gap-6 rounded-2xl border border-foreground/10 bg-secondary/40 px-6 py-16 text-center">
@@ -205,7 +156,7 @@ function CallToActionSection(block: CallToActionBlock) {
   )
 }
 
-function RichTextSection(block: RichTextBlockData) {
+function RichTextSection(block: Block<'richTextBlock'>) {
   return (
     <section className="mx-auto max-w-3xl px-6 py-16 md:px-10">
       <PortableTextRenderer value={block.content} />
@@ -213,24 +164,24 @@ function RichTextSection(block: RichTextBlockData) {
   )
 }
 
-function renderBlock(block: UnknownBlock) {
+function renderBlock(block: PageBlock) {
   switch (block._type) {
     case 'hero':
-      return <HeroSection key={block._key} {...(block as unknown as HeroBlock)} />
+      return <HeroSection key={block._key} {...block} />
     case 'featureGrid':
-      return <FeatureGridSection key={block._key} {...(block as unknown as FeatureGridBlock)} />
+      return <FeatureGridSection key={block._key} {...block} />
     case 'testimonials':
-      return <TestimonialsSection key={block._key} {...(block as unknown as TestimonialsBlock)} />
+      return <TestimonialsSection key={block._key} {...block} />
     case 'callToAction':
-      return <CallToActionSection key={block._key} {...(block as unknown as CallToActionBlock)} />
+      return <CallToActionSection key={block._key} {...block} />
     case 'richTextBlock':
-      return <RichTextSection key={block._key} {...(block as unknown as RichTextBlockData)} />
+      return <RichTextSection key={block._key} {...block} />
     default:
       return null
   }
 }
 
-export function PageBuilder({ blocks }: { blocks?: UnknownBlock[] | null }) {
+export function PageBuilder({ blocks }: { blocks?: PageBlock[] | null }) {
   if (!blocks?.length) return null
   return <>{blocks.map((block) => renderBlock(block))}</>
 }
