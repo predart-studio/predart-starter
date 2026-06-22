@@ -26,6 +26,21 @@ function fontToImportName(name) {
   return name.replace(/\s+/g, '_');
 }
 
+/**
+ * Replace a marked block, throwing if the markers aren't found. Without this a
+ * non-matching String.replace silently no-ops and the wizard reports success
+ * while leaving layout.tsx untouched.
+ */
+function replaceBlock(source, regex, replacement, label) {
+  if (!regex.test(source)) {
+    throw new Error(
+      `Could not find the // PREDART:${label}_START … _END markers in app/layout.tsx. ` +
+        `Restore the markers (or re-clone the starter) and run the wizard again.`
+    );
+  }
+  return source.replace(regex, replacement);
+}
+
 async function main() {
   console.log('\n── Predart Studio — New Client Wizard ──\n');
 
@@ -98,9 +113,11 @@ async function main() {
     `const fontSans = ${importName}({ variable: '--font-sans', subsets: ['latin'] })\n` +
     `// PREDART:FONT_END`;
 
-  layout = layout.replace(
+  layout = replaceBlock(
+    layout,
     /\/\/ PREDART:FONT_START[\s\S]*?\/\/ PREDART:FONT_END/,
-    fontBlock
+    fontBlock,
+    'FONT'
   );
 
   // d. Update layout.tsx — metadata block
@@ -113,9 +130,11 @@ async function main() {
     `}\n` +
     `// PREDART:META_END`;
 
-  layout = layout.replace(
+  layout = replaceBlock(
+    layout,
     /\/\/ PREDART:META_START[\s\S]*?\/\/ PREDART:META_END/,
-    metaBlock
+    metaBlock,
+    'META'
   );
 
   fs.writeFileSync(LAYOUT_PATH, layout, 'utf8');
