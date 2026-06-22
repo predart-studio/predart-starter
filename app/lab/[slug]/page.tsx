@@ -4,6 +4,8 @@ import { getEntry, entrySlugs } from '../registry'
 import { Playground } from './playground'
 
 export function generateStaticParams() {
+  // /lab is dev-only (see app/lab/layout.tsx) — don't prerender it in prod.
+  if (process.env.NODE_ENV === 'production') return []
   return entrySlugs.map((slug) => ({ slug }))
 }
 

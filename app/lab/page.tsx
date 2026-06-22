@@ -9,9 +9,9 @@ import { LabExplorer } from './lab-explorer'
  * `pnpm dev` and open /lab. Each tile opens the component in an isolation
  * playground (`/lab/<slug>`) — a device-sized, scrollable viewport where you
  * can poke at it on its own. The grid is filterable by source (which catalog
- * each motion was ported from) via the <LabExplorer> client island. Remove this
- * route (`rm -rf app/lab`) before launching a client site if you don't want it
- * publicly reachable.
+ * each motion was ported from) via the <LabExplorer> client island. This route
+ * is dev-only: app/lab/layout.tsx makes it 404 in production builds, so it's
+ * never publicly reachable on a deployed client site.
  */
 export default function MotionLab() {
   return (
