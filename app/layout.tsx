@@ -11,6 +11,10 @@ import { SanityLive } from '@/sanity/lib/live'
 import { DisableDraftMode } from '@/components/disable-draft-mode'
 import { isSanityConfigured } from '@/sanity/env'
 import './globals.css'
+// Hand-managed semantic typography layer (.label, .kicker, .prose-measure,
+// balanced headings) — loaded AFTER generated globals.css so it can lean on the
+// type-scale CSS vars. See app/typography.css.
+import './typography.css'
 
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
 

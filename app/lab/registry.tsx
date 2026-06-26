@@ -52,6 +52,7 @@ import {
   GooeyHoverReveal,
   MeshGradient,
   ImageDissolveScroll,
+  PageWipe,
   SoftBlur,
   PerCharacterRise,
   PerWordCrossfade,
@@ -810,6 +811,16 @@ const rawEntries: Omit<LabEntry, 'source'>[] = [
     render: () => <FullscreenSlideMenu />,
   },
 
+  // ── Page transitions ─────────────────────────────────────────────────────
+  {
+    slug: 'page-wipe',
+    name: 'Page Wipe',
+    category: 'transition',
+    hint: 'click the button — diagonal wipe swaps the page',
+    full: true,
+    render: () => <PageWipe />,
+  },
+
   // ── Page-chrome components ────────────────────────────────────────────────
   {
     slug: 'hide-header',
@@ -1158,6 +1169,7 @@ const PIXELPOINT_SLUGS = new Set<string>([
 
 const PREDART_SLUGS = new Set<string>([
   'text-scramble', 'magnetic', 'draw-path', 'velocity-skew', 'image-follow-list',
+  'page-wipe',
 ])
 
 function sourceOf(slug: string): AnimSource {

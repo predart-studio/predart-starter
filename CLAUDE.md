@@ -9,9 +9,23 @@
 - React Hook Form + Zod (forms)
 
 ## Token Workflow
-1. Edit `tokens.json` (oklch color values)
-2. Run `pnpm tokens` to regenerate `app/globals.css`
-3. NEVER edit `app/globals.css` directly — it is generated
+1. Edit `tokens.json` — colors (oklch), `radius`, `font`, plus the design-system namespaces: `type`
+   (editorial type scale), `space` (`gutter` / `section-y` / `content-max`), `grid` (12-col), and
+   `motion` (house ease + durations)
+2. Run `pnpm tokens` to regenerate **both** `app/globals.css` (CSS vars) and `lib/motion.generated.ts`
+   (house easing + duration constants for GSAP/Framer)
+3. NEVER edit `app/globals.css` or `lib/motion.generated.ts` directly — both are generated
+4. Semantic type utilities (`.label`, `.kicker`, `.prose-measure`, balanced headings) live in the
+   hand-managed `app/typography.css`, imported in `layout.tsx` AFTER globals.css
+
+## Grid System
+All landing-page sections lay out on ONE shared 12-column grid. Do not roll a per-section grid.
+- Tokens live in `tokens.json > grid` (`--grid-cols: 12`, `--grid-gutter`, `--grid-baseline` = 8px) and flow through `pnpm tokens`. Page width is `--container-content` = `min(92vw, 128rem)`.
+- Wrap section content in `<GridWrap>` (`components/grid.tsx`) — the centered max-width field carrying the 12-col track + `--grid-gutter`.
+- Place content by column line with `col-span-*` / `col-start-*` (e.g. `col-span-12 md:col-span-7`). Equal-N child rows: a `col-span-12` sub-grid (`grid-cols-N gap-[var(--grid-gutter)]`, N divides 12).
+- Position on the grid, but bound prose **measure** separately with `prose-measure` (68ch) or a rem `max-w`, so text stays readable as the field widens.
+- Section padding stays on `<section>` (`px-[var(--spacing-gutter)] py-[var(--spacing-section-y)]`); GridWrap is the inner field.
+- Dev: press `g` to toggle the column overlay (`GridOverlay`, dev-only, shares GridWrap geometry). Mount `<GridOverlay />` once per page (e.g. in `app/page.tsx`).
 
 ## Project Context Pack (Read This First)
 For serious client projects, check `docs/project-context/` before implementing.
@@ -74,6 +88,10 @@ Phosphor Icons for everything. Import from `@phosphor-icons/react`.
 - Never animate the same property on the same element from both
 - Use `dynamic(() => import(...), { ssr: false })` for GSAP-heavy components
 - Always add `prefers-reduced-motion` media query checks
+- For ANY motion work, use the **motion-director** skill (`.claude/skills/motion-director/`) — the
+  canonical timing/easing/distance/stagger system, recipes, and a deterministic auditor
+  (`python3 .claude/skills/motion-director/scripts/audit-motion.py`). It keeps the whole site speaking
+  one motion language instead of scattering one-off values.
 
 ## Sanity CMS
 Built in by default — embedded Studio at `/studio`, project-agnostic (each client
