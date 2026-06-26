@@ -6,11 +6,11 @@ import { CustomEase } from 'gsap/CustomEase'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion'
 import {
-  splitChars,
   buildSoftBlurVars,
   SOFT_BLUR_EASE_ID,
   SOFT_BLUR_EASE_PATH,
 } from '@/lib/motion/soft-blur'
+import { splitWordsToCharSpans } from '@/lib/motion/split-text-dom'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(CustomEase, ScrollTrigger)
@@ -21,15 +21,21 @@ if (typeof window !== 'undefined') {
 interface SoftBlurProps {
   text: string
   /**
-   * - `load`  : reveal once on mount.
-   * - `scroll`: reveal when it scrolls into view (default).
-   * - `hover` : re-reveal on each pointer-enter.
+   * - `load`   : reveal once on mount.
+   * - `scroll` : reveal when it scrolls into view (default).
+   * - `hover`  : re-reveal on each pointer-enter.
    */
   trigger?: 'load' | 'scroll' | 'hover'
   /** Tween duration per character (seconds). */
   duration?: number
   /** Per-character delay step (seconds). */
   stagger?: number
+  /**
+   * ScrollTrigger start position (only used when `trigger === 'scroll'`).
+   * Default `'top 75%'` so the reveal plays as the text enters comfortable
+   * view — not the instant its top edge clips the bottom of the viewport.
+   */
+  start?: string
   className?: string
   as?: ElementType
 }
@@ -56,6 +62,7 @@ export function SoftBlur({
   trigger = 'scroll',
   duration = 0.9,
   stagger = 0.025,
+  start = 'top 75%',
   className,
   as: Tag = 'span',
 }: SoftBlurProps) {
@@ -68,17 +75,8 @@ export function SoftBlur({
     if (!el) return
 
     const { from, to } = buildSoftBlurVars({ duration, stagger })
-
-    // Build per-character spans (preserve spaces as non-breaking).
-    el.textContent = ''
-    const spans = splitChars(text).map((ch) => {
-      const s = document.createElement('span')
-      s.textContent = ch
-      s.style.display = 'inline-block'
-      s.style.whiteSpace = 'pre'
-      el.appendChild(s)
-      return s
-    })
+    // Word-grouped per-character spans (keeps words from breaking mid-line).
+    const spans = splitWordsToCharSpans(el, text)
 
     const ctx = gsap.context(() => {
       const reveal = (extra: Record<string, unknown> = {}) => {
@@ -92,7 +90,7 @@ export function SoftBlur({
         return () => el.removeEventListener('mouseenter', onEnter)
       }
       if (trigger === 'scroll') {
-        reveal({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } })
+        reveal({ scrollTrigger: { trigger: el, start, once: true } })
         return
       }
       reveal() // 'load'
@@ -102,7 +100,7 @@ export function SoftBlur({
       ctx.revert()
       el.textContent = text // restore plain text on cleanup
     }
-  }, [text, trigger, duration, stagger, prefersReduced])
+  }, [text, trigger, duration, stagger, start, prefersReduced])
 
   return (
     <Tag ref={ref} className={className}>

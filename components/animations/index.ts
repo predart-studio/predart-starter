@@ -66,6 +66,8 @@ export { TextMorph } from './text-morph'
 export { GooeyHoverReveal } from './gooey-hover-reveal'
 export { MeshGradient } from './mesh-gradient'
 export { ImageDissolveScroll } from './image-dissolve-scroll'
+// Diagonal solid-colour page transition (Barba-style overlay, native React/GSAP)
+export { PageWipe } from './page-wipe'
 // Ported from pixel-point/animate-text (clean-room, GSAP-only) — see MOTION-PORT-REPORT.md
 export { SoftBlur } from './soft-blur'
 // animate-text catalog — entrance reveals (one-shot, scroll-triggered)

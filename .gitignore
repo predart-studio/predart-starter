@@ -52,3 +52,7 @@ docs/references/*.json
 
 # logs
 *.log
+
+# local verification / tooling artifacts
+.playwright-mcp/
+*-verify.jpeg
